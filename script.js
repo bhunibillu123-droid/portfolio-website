@@ -1,131 +1,53 @@
 
-console.log("Portfolio Loaded Successfully");
+document.addEventListener("DOMContentLoaded", () => {
+    const menuButton = document.getElementById("menu-btn");
+    const navigation = document.getElementById("nav-links");
 
-const words = [
-    "B.Tech AI & ML Student",
-    "Aspiring Cloud Engineer",
-    "Python Developer",
-    "Web Developer"
-];
+    // Mobile navigation menu
+    if (menuButton && navigation) {
+        menuButton.addEventListener("click", () => {
+            const isOpen = navigation.classList.toggle("show");
 
-let wordIndex = 0;
-let charIndex = 0;
-let currentWord = "";
-let isDeleting = false;
+            menuButton.setAttribute("aria-expanded", String(isOpen));
+            menuButton.setAttribute(
+                "aria-label",
+                isOpen ? "Close navigation menu" : "Open navigation menu"
+            );
 
-const typing = document.querySelector(".typing");
+            menuButton.innerHTML = isOpen
+                ? '<i class="fa-solid fa-xmark"></i>'
+                : '<i class="fa-solid fa-bars"></i>';
+        });
 
-function type() {
+        // Close the menu when a navigation link is clicked
+        navigation.querySelectorAll("a").forEach((link) => {
+            link.addEventListener("click", () => {
+                navigation.classList.remove("show");
+                menuButton.setAttribute("aria-expanded", "false");
+                menuButton.setAttribute(
+                    "aria-label",
+                    "Open navigation menu"
+                );
+                menuButton.innerHTML =
+                    '<i class="fa-solid fa-bars"></i>';
+            });
+        });
 
-    currentWord = words[wordIndex];
-
-    if (!isDeleting) {
-
-        typing.textContent = currentWord.substring(0, charIndex++);
-
-        if (charIndex > currentWord.length) {
-            isDeleting = true;
-            setTimeout(type, 1500);
-            return;
-        }
-
-    } else {
-
-        typing.textContent = currentWord.substring(0, charIndex--);
-
-        if (charIndex < 0) {
-            isDeleting = false;
-            wordIndex++;
-
-            if (wordIndex === words.length) {
-                wordIndex = 0;
+        // Close the mobile menu if the screen becomes larger
+        window.addEventListener("resize", () => {
+            if (window.innerWidth > 760) {
+                navigation.classList.remove("show");
+                menuButton.setAttribute("aria-expanded", "false");
+                menuButton.innerHTML =
+                    '<i class="fa-solid fa-bars"></i>';
             }
-        }
+        });
     }
 
-    setTimeout(type, isDeleting ? 50 : 120);
-}
+    // Automatically update the copyright year
+    const yearElement = document.getElementById("year");
 
-type();
-
-// Project Scroll Animation
-
-const cards=document.querySelectorAll(".project-card");
-
-function revealProjects(){
-
-cards.forEach(card=>{
-
-const top=card.getBoundingClientRect().top;
-
-const trigger=window.innerHeight-120;
-
-if(top<trigger){
-
-card.classList.add("show");
-
-}
-
-});
-
-}
-
-window.addEventListener("scroll",revealProjects);
-
-revealProjects();
-
-const reveals = document.querySelectorAll(".reveal");
-
-function revealProjects() {
-
-    reveals.forEach((element) => {
-
-        const top = element.getBoundingClientRect().top;
-        const windowHeight = window.innerHeight;
-
-        if (top < windowHeight - 100) {
-            element.classList.add("show");
-        }
-
-    });
-
-}
-
-window.addEventListener("scroll", revealProjects);
-window.addEventListener("load", revealProjects);
-
-const topBtn = document.getElementById("topBtn");
-
-window.onscroll = function () {
-
-    if(document.documentElement.scrollTop > 300){
-        topBtn.style.display = "block";
-    }else{
-        topBtn.style.display = "none";
+    if (yearElement) {
+        yearElement.textContent = new Date().getFullYear();
     }
-
-};
-
-topBtn.onclick = function(){
-
-    window.scrollTo({
-        top:0,
-        behavior:"smooth"
-    });
-
-};
-
-window.addEventListener("scroll", () => {
-
-    const scrollTop = document.documentElement.scrollTop;
-
-    const scrollHeight =
-        document.documentElement.scrollHeight -
-        document.documentElement.clientHeight;
-
-    const scrollPercent = (scrollTop / scrollHeight) * 100;
-
-    document.getElementById("progress-bar").style.width =
-        scrollPercent + "%";
-
 });
